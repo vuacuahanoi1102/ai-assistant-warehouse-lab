@@ -26,9 +26,9 @@ app/
 ├── index.html
 ├── task_template.py
 ├── services/
-│   ├── sample_services.py    
-│   ├── chat_services.py   
-│   ├── plastic_service.py        
-|   └── llm_service.py     
+│  ├── sample_services.py    
+│  ├── chat_services.py   
+│  ├── plastic_service.py        
+|  └── llm_service.py     
 
 Find the PowerPoint file for more details about its purpose and how it works.
