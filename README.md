@@ -21,7 +21,7 @@ Track movement of bags if lower layers need to be accessed.
 📁 Project Structure
 app/
 ├── main.py  
-├── database.py               
+├── database.py
 ├── models.py
 ├── index.html
 ├── task_template.py
