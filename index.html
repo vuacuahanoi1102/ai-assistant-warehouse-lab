@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chat BOT PAL</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="bg-white shadow-2xl rounded-2xl w-full max-w-xl flex flex-col h-[90vh]">
+    <!-- Header -->
+    <div class="bg-blue-600 text-white text-xl font-bold p-4 rounded-t-2xl">
+        CHAT BOT PAL 
+    </div>
+
+    <!-- Chat box -->
+    <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col">
+      <!-- Chat messages sẽ được thêm vào đây -->
+    </div>
+
+    <!-- Input box -->
+    <div class="p-4 border-t flex space-x-2">
+      <input
+        id="question"
+        type="text"
+        placeholder="Type a message..."
+        class="flex-grow p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+        onkeydown="if(event.key==='Enter') askLLM()"
+      />
+      <button
+        onclick="askLLM()"
+        class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
+      >
+        Send
+      </button>
+    </div>
+  </div>
+
+  <script>
+    async function askLLM() {
+      const input = document.getElementById("question");
+      const question = input.value.trim();
+      if (!question) return;
+
+      appendMessage("user", question);
+      input.value = "";
+
+      // loading message
+      const loadingId = appendMessage("bot", "Thinking...");
+
+      try {
+        const res = await fetch("http://localhost:8000/ask_llm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question }),
+        });
+        const data = await res.json();
+        const response = data.response;
+
+        // remove loading
+        removeMessageById(loadingId);
+
+        const message =
+          response.action_result
+            ? response.action_result
+            : "(No action result)";
+        appendMessage("bot", message);
+      } catch (err) {
+        removeMessageById(loadingId);
+        appendMessage("bot", "❌ Error: Cannot reach server.");
+      }
+    }
+
+    let msgCounter = 0;
+    function appendMessage(sender, text) {
+      const box = document.getElementById("chat-box");
+      const msg = document.createElement("div");
+      const id = "msg-" + msgCounter++;
+
+      msg.id = id;
+      msg.className =
+        "max-w-[75%] whitespace-pre-line p-3 rounded-xl shadow " +
+        (sender === "user"
+          ? "bg-blue-100 self-end text-right"
+          : "bg-gray-100 self-start");
+
+      // Dùng innerHTML để render \n thành <br>
+      msg.innerHTML = text.replace(/\n/g, "<br>");
+      box.appendChild(msg);
+      box.scrollTop = box.scrollHeight; // auto scroll
+      return id;
+    }
+
+    function removeMessageById(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    }
+    const socket = new WebSocket("ws://localhost:8000/ws");
+
+    socket.onmessage = function (event) {
+      const msg = event.data;
+      appendMessage("bot", msg);
+    };
+
+    socket.onopen = function () {
+      console.log("✅ Connected to WebSocket");
+    };
+
+    socket.onerror = function () {
+      appendMessage("bot", "❌ WebSocket error.");
+    };
+  </script>
+</body>
+</html>
