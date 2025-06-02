@@ -19,6 +19,7 @@ Manage plastic bag positions (pallet → layer → bag).
 Track movement of bags if lower layers need to be accessed.
 
 📁 Project Structure
+
 app/
 
 ├── main.py  
@@ -32,9 +33,13 @@ app/
 ├── task_template.py
 
 ├── services/
-│  ├── sample_services.py    
+
+│  ├── sample_services.py  
+
 │  ├── chat_services.py   
-│  ├── plastic_service.py        
+
+│  ├── plastic_service.py   
+
 |  └── llm_service.py     
 
 Find the PowerPoint file for more details about its purpose and how it works.
