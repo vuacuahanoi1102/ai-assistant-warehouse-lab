@@ -1,7 +1,7 @@
 AI Assistant for Workflow & Warehouse AutomationAI Assistant using FastAPI and LLMs to manage sample workflow and plastic storage
 This project is an AI assistant system designed to support real-world lab and warehouse workflows. It integrates LLMs with backend logic to manage tasks, and track plastic material inventory across pallets and layers.
 .
-
+Here is the demo: https://www.youtube.com/watch?v=kDyalGqRgio
 🔧 Tech Stack
 Python, FastAPI
 
